@@ -142,7 +142,6 @@ class Node:
         if self.parent is not None:
             self.parent.backpropagate(value)  
 
-
 class MCTS:
     def __init__(self, game, args):
         self.game = game
@@ -153,9 +152,18 @@ class MCTS:
 
         for search in range(self.args['num_searches']):
             node = root
+            
             while node.is_fully_expanded():
+                # return np.sum(self.expandable_moves) == 0 and len(self.children) > 0
                 node = node.select()
-            # action_taken은 처음 8개이후 존재함.
+                # for child in self.children:
+                #     ucb = self.get_ucb(child)
+
+                #     if ucb > best_ucb:
+                #         best_child = child
+                #         best_ucb = ucb
+                
+                # action_taken은 처음 8개이후 존재함.
 
             value, is_terminal = self.game.get_value_and_terminated(node.state, node.action_taken)
             value = self.game.get_opponent_value(value)
@@ -187,7 +195,7 @@ state = tictactoe.get_initial_state()
 
 while True:
     print(state)
-    
+
     if player == 1:
         valid_moves = tictactoe.get_valid_moves(state)
         print("valid_moves", [i for i in range(tictactoe.action_size) if valid_moves[i] == 1])
@@ -196,7 +204,7 @@ while True:
         if valid_moves[action] == 0:
             print("action not valid")
             continue
-            
+
     else:
         neutral_state = tictactoe.change_perspective(state, player)
         mcts_probs = mcts.search(neutral_state)
@@ -215,5 +223,4 @@ while True:
         break
         
     player = tictactoe.get_opponent(player)
-
 
